@@ -1,6 +1,8 @@
 
 # import Base.IO
 using Iterators
+# hack until attach works properly
+using CM3Prototype
 
 const END_OF_DATA_SECTION = -1
 const JULIA_EXCEPTION_THROWN = -2
@@ -68,7 +70,7 @@ function launch_worker()
     sock = connect("127.0.0.1", port)
     try
         split = readint(sock)
-        # info("Julia: starting partition id: $split")
+        println("Julia: starting partition id: $split")
         T = deserialize(sock)
         cmd = readobj(sock)[2]
         func = deserialize(IOBuffer(cmd))        
@@ -76,9 +78,10 @@ function launch_worker()
         dump_stream(sock, func(split, it))
         writeint(sock, END_OF_DATA_SECTION)
         writeint(sock, END_OF_STREAM)
-        # info("Julia: exiting")
+        println("Julia: exiting")
     catch e
         # TODO: handle the case when JVM closes connection
+        println("Julia: error")
         Base.show_backtrace(STDERR, catch_backtrace())
         writeint(sock, JULIA_EXCEPTION_THROWN)
         rethrow()

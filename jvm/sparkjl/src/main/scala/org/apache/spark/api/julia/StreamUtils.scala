@@ -2,11 +2,10 @@ package org.apache.spark.api.julia
 
 import java.io.InputStream
 
-import org.apache.spark.Logging
 import org.apache.spark.util.RedirectThread
+import org.apache.spark._
 
-
-object StreamUtils extends Logging {
+object StreamUtils {
 
   /**
    * Redirect the given streams to our stderr in separate threads.
@@ -17,7 +16,7 @@ object StreamUtils extends Logging {
       new RedirectThread(stderr, System.err, "stderr reader for julia").start()
     } catch {
       case e: Exception =>
-        logError("Exception in redirecting streams", e)
+        throw new SparkException("Exception in redirecting streams")
     }
   }
 

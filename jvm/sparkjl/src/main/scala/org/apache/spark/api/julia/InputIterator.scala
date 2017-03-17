@@ -9,7 +9,7 @@ import org.apache.spark._
 /**
  * Iterator that connects to a Julia process and reads data back to JVM.
  * */
-class InputIterator(context: TaskContext, worker: Socket, outputThread: OutputThread) extends Iterator[Array[Byte]] with Logging {
+class InputIterator(context: TaskContext, worker: Socket, outputThread: OutputThread) extends Iterator[Array[Byte]] {
 
   val BUFFER_SIZE = 65536
   
@@ -53,16 +53,16 @@ class InputIterator(context: TaskContext, worker: Socket, outputThread: OutputTh
     } catch {
 
       case e: Exception if context.isInterrupted =>
-        logDebug("Exception thrown after task interruption", e)
+        // logDebug("Exception thrown after task interruption", e)
         throw new TaskKilledException
 
       case e: Exception if env.isStopped =>
-        logDebug("Exception thrown after context is stopped", e)
+        // logDebug("Exception thrown after context is stopped", e)
         null  // exit silently
 
       case e: Exception if outputThread.exception.isDefined =>
-        logError("Julia worker exited unexpectedly (crashed)", e)
-        logError("This may have been caused by a prior exception:", outputThread.exception.get)
+        // logError("Julia worker exited unexpectedly (crashed)", e)
+        // logError("This may have been caused by a prior exception:", outputThread.exception.get)
         throw outputThread.exception.get
 
       case eof: EOFException =>

@@ -55,7 +55,7 @@ private object SpecialLengths {
   val NULL = -5
 }
 
-object JuliaRDD extends Logging {
+object JuliaRDD {
 
   def fromJavaRDD[T](javaRdd: JavaRDD[T], command: Array[Byte], inputType: Array[Byte]): JuliaRDD =
     new JuliaRDD(JavaRDD.toRDD(javaRdd), command, inputType)
@@ -80,7 +80,8 @@ object JuliaRDD extends Logging {
       out.flush()
 
       // Wait for it to connect to our socket
-      serverSocket.setSoTimeout(10000)
+      // ****hack**** workaround for very slow response on windows was 10 seconds
+      serverSocket.setSoTimeout(60000)
       try {
         val socket = serverSocket.accept()
         // workers.put(socket, worker)
