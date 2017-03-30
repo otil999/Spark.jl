@@ -1,8 +1,6 @@
 
 # import Base.IO
 using Iterators
-# hack until attach works properly
-using CM3Prototype
 
 const END_OF_DATA_SECTION = -1
 const JULIA_EXCEPTION_THROWN = -2
