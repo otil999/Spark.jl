@@ -1,6 +1,7 @@
-include("Person.jl")
 
 using Spark
+
+@attach include("Person.jl")
 
 sc = SparkContext(master="local", appname="LoadCsv Example")
 

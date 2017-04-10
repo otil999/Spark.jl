@@ -1,9 +1,9 @@
 using Spark
 
-sc = SparkContext(master="local", appname="Map Example")
+sc = SparkContext(master="local", appname="flat_map Example")
 
-rdd = parallelize(sc, [[1,"a"],[2,"b"],[3,"c"],[4,"d"]])
-mappedRdd = flat_map(rdd, item -> item[2])
+rdd = parallelize(sc, [1,2,0,3])
+mappedRdd = flat_map(rdd, item -> fill(it, it))
 result  = collect(mappedRdd)
 
 println("\n This is the result: $result \n")

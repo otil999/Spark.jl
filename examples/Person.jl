@@ -1,4 +1,4 @@
-@attach type Person
+type Person
   name::String
   age::Int64
   sex::String

@@ -1,6 +1,6 @@
 using Spark
 
-sc = SparkContext(master="local", appname="MapPartitionWithIndex Example")
+sc = SparkContext(master="local", appname="Count Example")
 
 rdd = parallelize(sc, [0,1,2,3])
 result  = count(rdd)
