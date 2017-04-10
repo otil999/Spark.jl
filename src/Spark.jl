@@ -8,14 +8,24 @@ export SparkConfig,
        text_file,
        parallelize,
        map,
+       map_pair,
        map_partitions,
+       map_partitions_pair,
        map_partitions_with_index,
        reduce,
        collect,
        count,
        close,
        typehint!,
-       @attach
+       @attach,
+       share_variable,
+       @share,
+       flat_map,
+       flat_map_pair,
+       cartesian,
+       group_by_key,
+       reduce_by_key,
+       cache
 
 include("core.jl")
 
