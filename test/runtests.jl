@@ -2,6 +2,8 @@ using Spark
 using Base.Test
 
 include("basic.jl")
+include("map.jl")
+include("map_partitions.jl")
 include("attach.jl")
 include("reduce.jl")
 include("text_file.jl")
