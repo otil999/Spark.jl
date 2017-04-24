@@ -15,8 +15,9 @@ export SparkConfig,
        reduce,
        collect,
        count,
+       id,
+       num_partitions,
        close,
-       typehint!,
        @attach,
        share_variable,
        @share,
@@ -25,7 +26,10 @@ export SparkConfig,
        cartesian,
        group_by_key,
        reduce_by_key,
-       cache
+       cache,
+       repartition,
+       coalesce,
+       pipe
 
 include("core.jl")
 
