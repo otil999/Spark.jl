@@ -56,7 +56,17 @@ function spark_defaults(jconf::JSparkConf)
         if shome == "" ; return jconf; end
         sconf = joinpath(shome, "conf")
     end
-    p = map(split, filter(isnotcomment, split(readstring(joinpath(sconf, "spark-defaults.conf")), '\n', keep=false) ) )
+    
+    confText = ""
+
+    try 
+      confText = readstring(joinpath(sconf, "spark-defaults.conf"))
+    catch ex
+      warn(ex)
+      warn("spark-defaults.conf does not exist - skipping spark defaults!")
+    end
+
+    p = map(split, filter(isnotcomment, split(confText, '\n', keep=false) ) )
     for x in p
          jcall(jconf, "set", Spark.JSparkConf, (JString, JString), x[1], x[2])
     end
