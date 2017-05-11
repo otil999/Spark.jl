@@ -16,10 +16,10 @@ Params:
 """
 function SparkContext(;master::AbstractString="local",
                       appname::AbstractString="Julia App on Spark")
+    Spark.init()
     conf = SparkConf()
     setmaster(conf, master)
     setappname(conf, appname)
-    Spark.init()
     jsc = JJavaSparkContext((JSparkConf,), conf.jconf)
     sc = SparkContext(jsc, master, appname, "")
     add_jar(sc, joinpath(dirname(@__FILE__), "..", "jvm", "sparkjl", "target", "sparkjl-0.1.jar"))
