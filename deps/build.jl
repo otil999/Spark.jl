@@ -7,6 +7,12 @@ catch
     error("Cannot find maven. Is it installed?")
 end
 
-cd("../jvm/sparkjl")
-run(`$mvn clean package`)
+profile = get(ENV, "SPARKJL_PROFILE", "")
 
+cd("../jvm/sparkjl")
+
+if isempty(profile)
+    run(`$mvn clean package`)
+else
+    run(`$mvn -P$profile clean package`)
+end
