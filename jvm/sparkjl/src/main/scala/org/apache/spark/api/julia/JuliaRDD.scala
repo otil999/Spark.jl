@@ -5,12 +5,12 @@ import java.net._
 
 import org.apache.commons.compress.utils.Charsets
 import org.apache.spark._
-import org.apache.spark.api.java.{JavaSparkContext, JavaRDD, JavaPairRDD}
+import org.apache.spark.api.java.{JavaPairRDD, JavaRDD, JavaSparkContext}
+import org.apache.spark.internal.Logging
 import org.apache.spark.rdd.RDD
 
 import scala.collection.JavaConversions._
 import scala.language.existentials
-import scala.collection.convert.Wrappers._
 import scala.reflect.ClassTag
 
 class AbstractJuliaRDD[T:ClassTag](
@@ -24,7 +24,7 @@ class AbstractJuliaRDD[T:ClassTag](
   override def getPartitions: Array[Partition] = firstParent.partitions
 
   // Note: needs to override in later versions of Spark
-  def getNumPartitions: Int = firstParent.partitions.length
+  // override def getNumPartitions: Int = firstParent.partitions.length
 
   override val partitioner: Option[Partitioner] = {
     if (preservePartitioning) firstParent.partitioner else None
