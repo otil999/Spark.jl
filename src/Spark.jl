@@ -1,6 +1,17 @@
 module Spark
 
+    module Worker
+        import ..Spark
+        export dump_stream,
+               readobj
+        include("worker.jl")
+        include("serialization.jl")
+    end
+
+import .Worker
+
 export SparkConfig,
+       SparkConf,
        SparkContext,
        RDD,
        JuliaRDD,
@@ -33,4 +44,4 @@ export SparkConfig,
 
 include("core.jl")
 
-end 
+end
