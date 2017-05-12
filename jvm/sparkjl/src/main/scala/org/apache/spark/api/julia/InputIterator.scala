@@ -3,8 +3,8 @@ package org.apache.spark.api.julia
 import java.io.{BufferedInputStream, DataInputStream, EOFException}
 import java.net.Socket
 
-import org.apache.commons.compress.utils.Charsets
 import org.apache.spark._
+import org.apache.spark.internal.Logging
 
 
 /**

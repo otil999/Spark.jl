@@ -3,6 +3,7 @@ package org.apache.spark.api.julia
 import java.io.{DataOutputStream, BufferedOutputStream}
 import java.net.Socket
 
+import org.apache.spark.memory.MemoryMode
 import org.apache.spark.util.Utils
 import org.apache.spark.{TaskContext, Partition, SparkEnv}
 
@@ -62,10 +63,31 @@ class OutputThread(context: TaskContext, it: Iterator[Any], worker: Socket, comm
     } finally {
       // Release memory used by this thread for shuffles
       // env.shuffleMemoryManager.releaseMemoryForThisThread()
-      env.shuffleMemoryManager.releaseMemoryForThisTask()
+
+      // TODO backward compatibility issue
+      // env.shuffleMemoryManager.releaseMemoryForThisTask()
+
       // Release memory used by this thread for unrolling blocks
       // env.blockManager.memoryStore.releaseUnrollMemoryForThisThread()
-      env.blockManager.memoryStore.releaseUnrollMemoryForThisTask()
+
+      // TODO backward compatibility issue
+      // env.blockManager.memoryStore.releaseUnrollMemoryForThisTask()
+
+      try {
+        Utils.tryLogNonFatalError {
+          // Release memory used by this thread for unrolling blocks
+          SparkEnv.get.blockManager.memoryStore.releaseUnrollMemoryForThisTask(MemoryMode.ON_HEAP)
+          SparkEnv.get.blockManager.memoryStore.releaseUnrollMemoryForThisTask(MemoryMode.OFF_HEAP)
+          // Notify any tasks waiting for execution memory to be freed to wake up and try to
+          // acquire memory again. This makes impossible the scenario where a task sleeps forever
+          // because there are no other tasks left to notify it. Since this is safe to do but may
+          // not be strictly necessary, we should revisit whether we can remove this in the future.
+          val memoryManager = SparkEnv.get.memoryManager
+          memoryManager.synchronized { memoryManager.notifyAll() }
+        }
+      } finally {
+        TaskContext.unset()
+      }
     }
   }
 
