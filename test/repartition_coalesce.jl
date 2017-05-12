@@ -1,7 +1,10 @@
 # test repartition and coalesce
 
 nums1 = parallelize(sc, 1:30)
-@test num_partitions(nums1) == 1
+
+# Number of initial partitions depends on the cluster
+# @test num_partitions(nums1) == 1
+
 nums3 = repartition(nums1, 3)
 @test num_partitions(nums3) == 3
 nums2 = coalesce(nums3, 2)
@@ -10,7 +13,10 @@ nums2 = coalesce(nums3, 2; shuffle=true)
 @test num_partitions(nums2) == 2
 
 pnums1 = cartesian(nums1, nums1)
-@test num_partitions(pnums1) == 1
+
+# Number of initial partitions depends on the cluster
+# @test num_partitions(pnums1) == 1
+
 pnums3 = repartition(pnums1, 3)
 @test num_partitions(pnums3) == 3
 pnums2 = coalesce(pnums3, 2)
