@@ -1,7 +1,8 @@
 using Spark
 using Base.Test
 
-sc = SparkContext(master="local")
+test_master = get(ENV, "SPARKJL_TESTMASTER", "local")
+sc = SparkContext(master = test_master)
 
 include("basic.jl")
 include("map.jl")
