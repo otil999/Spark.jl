@@ -21,7 +21,7 @@ function init()
         #JavaCall.init(["-ea", "-Xmx1024M", "-Djava.class.path=$classpath", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4000"])
 
         #JVM default start
-        JavaCall.init(["-ea", "-Xmx1024M", "-cp $classpath", "-Djava.class.path=$classpath"])
+        JavaCall.init(["-ea", "-Xmx6144M", "-cp $classpath", "-Djava.class.path=$classpath"])
     end
 end
 

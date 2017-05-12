@@ -60,6 +60,10 @@
       <url>http://repo.akka.io/releases</url>
     </repository>
     <repository>
+      <id>Twitter repository</id>
+      <url>http://maven.twttr.com/</url>
+    </repository>
+    <repository>
         <id>scala</id>
         <name>Scala Tools</name>
         <url>http://scala-tools.org/repo-releases/</url>
@@ -474,6 +478,11 @@
           <groupId>org.apache.spark</groupId>
           <artifactId>spark-yarn_2.11</artifactId>
           <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.hadoop.gplcompression</groupId>
+          <artifactId>hadoop-lzo</artifactId>
+          <version>0.4.20</version>
         </dependency>
       </dependencies>
     </profile>
