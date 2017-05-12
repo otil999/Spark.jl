@@ -1,11 +1,11 @@
 package org.apache.spark.api.julia
 
-import java.io.{BufferedOutputStream, DataOutputStream}
+import java.io.{DataOutputStream, BufferedOutputStream}
 import java.net.Socket
 
 import org.apache.spark.memory.MemoryMode
 import org.apache.spark.util.Utils
-import org.apache.spark.{Partition, SparkEnv, TaskContext}
+import org.apache.spark.{TaskContext, Partition, SparkEnv}
 
 /**
  * The thread responsible for writing the data from the JuliaRDD's parent iterator to the

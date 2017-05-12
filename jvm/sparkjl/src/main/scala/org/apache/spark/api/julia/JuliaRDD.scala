@@ -5,7 +5,7 @@ import java.net._
 
 import org.apache.commons.compress.utils.Charsets
 import org.apache.spark._
-import org.apache.spark.api.java.{JavaPairRDD, JavaRDD, JavaSparkContext}
+import org.apache.spark.api.java.{JavaSparkContext, JavaRDD, JavaPairRDD}
 import org.apache.spark.internal.Logging
 import org.apache.spark.rdd.RDD
 
