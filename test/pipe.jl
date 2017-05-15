@@ -12,8 +12,6 @@ const TESTJL = """while !eof(STDIN); print("Julia", readline(STDIN)); end"""
 const TESTJLENV = """while !eof(STDIN); print(ENV["HEADER"], readline(STDIN)); end"""
 end
 
-sc = SparkContext(master="local")
-
 nums1 = parallelize(sc, 1:30)
 
 nums11 = collect(pipe(nums1, PIPETEST))
@@ -47,5 +45,3 @@ pnums11 = collect(pipe(pnums1, [JULIA, "-e", TESTJLENV], Dict{String,String}("HE
 for l in pnums11
     @test startswith(l, "Julia")
 end
-
-close(sc)

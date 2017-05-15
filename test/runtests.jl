@@ -1,6 +1,9 @@
 using Spark
 using Base.Test
 
+test_master = get(ENV, "SPARKJL_TESTMASTER", "local")
+sc = SparkContext(master = test_master)
+
 include("basic.jl")
 include("map.jl")
 include("map_partitions.jl")
@@ -15,3 +18,5 @@ include("reduce_by_key.jl")
 include("repartition_coalesce.jl")
 include("filter.jl")
 include("pipe.jl")
+
+close(sc)
