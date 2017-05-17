@@ -16,6 +16,7 @@ Params:
 """
 function SparkContext(;master::AbstractString="local",
                       appname::AbstractString="Julia App on Spark")
+    Spark.init()
     conf = SparkConf()
     setmaster(conf, master)
     setappname(conf, appname)

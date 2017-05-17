@@ -1,6 +1,7 @@
 
 using JavaCall
 using Iterators
+using Spark.Worker
 import Base: map, reduce, count, collect, close, filter
 
 JSparkConf = @jimport org.apache.spark.SparkConf

@@ -63,7 +63,7 @@ function spark_defaults(jconf::JSparkConf)
       confText = readstring(joinpath(sconf, "spark-defaults.conf"))
     catch ex
       warn(ex)
-      warn("spark-defaults.conf does not exist - skipping spark defaults!")
+      warn("spark-defaults.conf does not exist! - Skip reading spark defaults!")
     end
 
     p = map(split, filter(isnotcomment, split(confText, '\n', keep=false) ) )
