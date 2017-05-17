@@ -3,7 +3,7 @@ function init()
     hadoopConfDir = get(ENV, "HADOOP_CONF_DIR", "")
     yarnConfDir = get(ENV, "YARN_CONF_DIR", "")
     emrfslib = @static is_windows() ? "" :
-      "/usr/share/aws/emr/emrfs/lib/*:" *
+      "/usr/share/aws/emr/emrfs/lib/emrfs-hadoop-assembly-2.15.0.jar:" *
       "/usr/share/aws/emr/hadoop-state-pusher/lib/hadoop-common-2.7.2-amzn-1.jar"
 
     sparkjlassembly = joinpath(dirname(@__FILE__), "..", "jvm", "sparkjl", "target", "sparkjl-0.1-assembly.jar")
