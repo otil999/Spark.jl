@@ -25,6 +25,4 @@ include("context.jl")
 include("flat_map_iterator.jl")
 include("rdd.jl")
 include("attach.jl")
-include("worker.jl")
-
-
+#include("worker.jl")

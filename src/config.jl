@@ -68,7 +68,7 @@ function spark_defaults(jconf::JSparkConf)
 
     p = map(split, filter(isnotcomment, split(confText, '\n', keep=false) ) )
     for x in p
-         jcall(jconf, "set", Spark.JSparkConf, (JString, JString), x[1], x[2])
+         jcall(jconf, "set", JSparkConf, (JString, JString), x[1], x[2])
     end
     return jconf
 end

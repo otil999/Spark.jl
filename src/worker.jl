@@ -119,10 +119,10 @@ function launch_worker()
         io = IOBuffer()
         Base.show_backtrace(io, catch_backtrace())
         seekstart(io)
-        bt = readall(io)
+        bt = readstring(io)
         info(bt)
-        write(STDERR, bt)
         writeint(sock, JULIA_EXCEPTION_THROWN)
-        rethrow()
+        writeobj(sock, string(e) * bt)
+        # rethrow()
     end
 end

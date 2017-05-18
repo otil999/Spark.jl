@@ -218,7 +218,7 @@ function collect_internal(rdd::RDD, static_java_class, result_class)
                  as_java_rdd(rdd))
 
     byte_arrs = reinterpret(Vector{UInt8}, jbyte_arr)
-    val = readobj(IOBuffer(byte_arrs))[2]
+    val = Spark.readobj(IOBuffer(byte_arrs))[2]
     return val
 end
 
