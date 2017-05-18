@@ -18,5 +18,6 @@ include("reduce_by_key.jl")
 include("repartition_coalesce.jl")
 include("filter.jl")
 include("pipe.jl")
+include("text_file_s3.jl")
 
 close(sc)
