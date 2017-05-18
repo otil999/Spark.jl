@@ -268,6 +268,11 @@ function group_by_key(rdd::PairRDD)
     return JavaPairRDD(jprdd)
 end
 
+function group_by_key(rdd::PairRDD, n_split)
+    jprdd = jcall(as_java_rdd(rdd), "groupByKey", JJavaPairRDD, (jint,), n_split)
+    return JavaPairRDD(jprdd)
+end
+
 """Return a new RDD that has exactly num_partitions partitions."""
 function repartition{T<:RDD}(rdd::T, num_partitions::Integer)
     (Tjr, Tr) = (T <: PairRDD) ? (JJavaPairRDD, JavaPairRDD) : (JJavaRDD, JavaRDD)
@@ -293,6 +298,14 @@ which must be of type (V,V) => V.
 """
 function reduce_by_key(rdd::PairRDD, f::Function)
     grouped = group_by_key(rdd)
+    function func(it)
+        (it[1], reduce(f, it[2]))
+    end
+    return map_pair(grouped, func)
+end
+
+function reduce_by_key(rdd::PairRDD, f::Function, n_split::Int)
+    grouped = group_by_key(rdd, n_split)
     function func(it)
         (it[1], reduce(f, it[2]))
     end
