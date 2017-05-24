@@ -1,8 +1,13 @@
 using Spark
 using Base.Test
 
+#tests for config set/get
+cnf = Spark.SparkConf()
+cnf["abc"] = "def"
+@test cnf["abc"] == "def"
+
 test_master = get(ENV, "SPARKJL_TESTMASTER", "local")
-sc = SparkContext(master = test_master)
+sc = SparkContext(master = test_master, conf = cnf)
 
 include("basic.jl")
 include("map.jl")
