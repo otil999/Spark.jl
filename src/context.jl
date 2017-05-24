@@ -15,8 +15,9 @@ Params:
 """
 function SparkContext(;master::AbstractString="local",
                       deploymode::AbstractString="client",
-                      appname::AbstractString="Julia App on Spark",
-                      conf::SparkConf=SparkConf())
+                      appname::AbstractString="Julia App on Spark")
+    Spark.init()
+    conf = SparkConf()
     setmaster(conf, master)
     setappname(conf, appname)
     setdeploy(conf, deploymode)
@@ -32,6 +33,7 @@ function SparkContext(jsc::JJavaSparkContext)
     sc = SparkContext(jsc, master, appname, "")
     return sc
 end
+
 
 function get_temp_dir(sc::SparkContext)
     if sc.tempdir == ""
