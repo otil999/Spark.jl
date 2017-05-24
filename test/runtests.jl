@@ -18,5 +18,9 @@ include("reduce_by_key.jl")
 include("repartition_coalesce.jl")
 include("filter.jl")
 include("pipe.jl")
+# S3 reading does not work on build server, it is executed only for yarn
+if (test_master == "yarn")
+  include("text_file_s3.jl")
+end
 
 close(sc)

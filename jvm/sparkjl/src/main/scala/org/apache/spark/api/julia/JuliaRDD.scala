@@ -161,9 +161,11 @@ object JuliaRDD extends Logging {
       case SpecialLengths.JULIA_EXCEPTION_THROWN =>
         // Signals that an exception has been thrown in julia
         val exLength = stream.readInt()
-        val obj = new Array[Byte](exLength)
+        val strLength = -exLength + SpecialLengths.STRING_START
+        val obj = new Array[Byte](strLength)
         stream.readFully(obj)
-        throw new Exception(new String(obj, Charsets.UTF_8))
+        val str = new String(obj, Charsets.UTF_8)
+        throw new Exception(str)
       case SpecialLengths.ARRAY_VALUE =>
         val ab = new collection.mutable.ArrayBuffer[Any]()
         while(typeLength == SpecialLengths.ARRAY_VALUE) {

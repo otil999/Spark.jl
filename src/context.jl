@@ -7,7 +7,6 @@ type SparkContext
     tempdir::AbstractString
 end
 
-
 """
 Params:
  * master - address of application master. Currently only local and standalone modes
@@ -15,15 +14,16 @@ Params:
  * appname - name of application
 """
 function SparkContext(;master::AbstractString="local",
+                      deploymode::AbstractString="client",
                       appname::AbstractString="Julia App on Spark")
     Spark.init()
     conf = SparkConf()
     setmaster(conf, master)
     setappname(conf, appname)
+    setdeploy(conf, deploymode)
     jsc = JJavaSparkContext((JSparkConf,), conf.jconf)
     sc = SparkContext(jsc, master, appname, "")
     add_jar(sc, joinpath(dirname(@__FILE__), "..", "jvm", "sparkjl", "target", "sparkjl-0.1.jar"))
-    finalizer(sc, clear_up_tempdir)
     return sc
 end
 
@@ -31,20 +31,15 @@ function SparkContext(jsc::JJavaSparkContext)
     appname = jcall(jsc, "appName", JString, ())
     master = jcall(jsc, "master", JString, ())
     sc = SparkContext(jsc, master, appname, "")
-    finalizer(sc, clear_up_tempdir)
     return sc
 end
 
 
-function clear_up_tempdir(sc::SparkContext)
-    if sc.tempdir != ""
-        rm(sc.tempdir, recursive=true)
-    end
-end
-
 function get_temp_dir(sc::SparkContext)
     if sc.tempdir == ""
         sc.tempdir = mktempdir()
+        x = deepcopy(sc.tempdir)
+        atexit(()->rm(x, recursive=true))
     end
     return sc.tempdir
 end
@@ -88,7 +83,7 @@ end
 function parallelize(sc::SparkContext, coll; n_split::Int=-1)
     n_split = n_split == -1 ? default_parallelism(sc) : n_split
     tmp_path, f = mktemp()
-    dump_stream(f, coll)
+    Spark.dump_stream(f, coll)
     close(f)
     jrdd = jcall(JJuliaRDD, "readRDDFromFile", JJavaRDD,
                  (JJavaSparkContext, JString, jint),
