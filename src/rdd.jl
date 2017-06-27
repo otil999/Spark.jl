@@ -190,9 +190,12 @@ filter(rdd::PairRDD, f::Function) = PipelinedPairRDD(rdd, create_filter_function
 "Reduce elements of `rdd` using specified function `f`"
 function reduce(rdd::RDD, f::Function)
     process_attachments(context(rdd))
-    locally_reduced = map_partitions(rdd, it->reduction_function(f, it))
-    subresults = collect(locally_reduced)
-    return reduce(f, subresults)
+    first_stage = map_partitions(rdd, it->reduction_function(f, it))
+    cache(first_stage)
+    throw_away = count(first_stage)
+    second_stage = coalesce(first_stage, 1)
+    single_result = map_partitions(second_stage, it->reduction_function(f, it))
+    return collect(single_result)[1]        
 end
 
 function reduction_function(f, it)
