@@ -3,13 +3,13 @@ type SparkConf
     jconf::JSparkConf
 end
 
-function SparkConf(;opts...)
+function SparkConf(props::AbstractArray;opts...)
     jconf = JSparkConf(())
     opts = Dict(opts)
     for (k, v) in opts
         jcall(jconf, "set", JSparkConf, (JString, JString), string(k), v)
     end
-    spark_defaults(jconf)
+    spark_defaults(jconf, props)
     return SparkConf(jconf)
 end
     
@@ -43,30 +43,7 @@ function setappname(conf::SparkConf, appname::AbstractString)
     jcall(conf.jconf, "setAppName", JSparkConf, (JString,), appname)
 end
 
-
-function isnotcomment(x)
-    return !startswith("#", x)
-end
-
-
-function spark_defaults(jconf::JSparkConf)
-    sconf = get(ENV, "SPARK_CONF_DIR", "")
-    if sconf == ""
-        shome =  get(ENV, "SPARK_HOME", "")
-        if shome == "" ; return jconf; end
-        sconf = joinpath(shome, "conf")
-    end
-    
-    confText = ""
-
-    try 
-      confText = readstring(joinpath(sconf, "spark-defaults.conf"))
-    catch ex
-      warn(ex)
-      warn("spark-defaults.conf does not exist! - Skip reading spark defaults!")
-    end
-
-    p = map(split, filter(isnotcomment, split(confText, '\n', keep=false) ) )
+function spark_defaults(jconf::JSparkConf, p::AbstractArray)
     for x in p
          jcall(jconf, "set", JSparkConf, (JString, JString), x[1], x[2])
     end

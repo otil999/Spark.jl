@@ -14,15 +14,15 @@ Params:
  * appname - name of application
 """
 function SparkContext(;master::AbstractString="local",
-                      deploymode::AbstractString="client",
-                      appname::AbstractString="Julia App on Spark")
-    Spark.init()
-    conf = SparkConf()
+                      deploymode::AbstractString="client")
+    props = read_spark_properties()
+    dict = get_dictionary(props)
+    Spark.init(dict)
+    conf = SparkConf(props)
     setmaster(conf, master)
-    setappname(conf, appname)
     setdeploy(conf, deploymode)
     jsc = JJavaSparkContext((JSparkConf,), conf.jconf)
-    sc = SparkContext(jsc, master, appname, "")
+    sc = SparkContext(jsc, master, dict["spark.app.name"], "")
     add_jar(sc, joinpath(dirname(@__FILE__), "..", "jvm", "sparkjl", "target", "sparkjl-0.1.jar"))
     return sc
 end
@@ -34,6 +34,37 @@ function SparkContext(jsc::JJavaSparkContext)
     return sc
 end
 
+function get_dictionary(props::AbstractArray)
+    dict = Dict()
+    for entry in props
+       dict[entry[1]] = entry[2]
+    end
+    return dict
+end
+
+function isnotcomment(x)
+    return !startswith(x,"#")
+end
+
+function read_spark_properties()
+      sconf = get(ENV, "SPARK_CONF_DIR", "")
+      if sconf == ""
+          shome =  get(ENV, "SPARK_HOME", "")
+          if shome == "" ; return jconf; end
+          sconf = joinpath(shome, "conf")
+      end
+
+      confText = ""
+
+      try
+        confText = readstring(joinpath(sconf, "spark-defaults.conf"))
+      catch ex
+        warn(ex)
+        warn("Check your spark-defaults.conf is exist! Skip reading configs from spark-defaults.conf.")
+      end
+
+      return map(split, filter(isnotcomment, split(confText, '\n', keep=false) ) )
+end
 
 function get_temp_dir(sc::SparkContext)
     if sc.tempdir == ""
