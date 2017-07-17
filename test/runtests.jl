@@ -2,6 +2,7 @@ using Spark
 using Base.Test
 
 test_master = get(ENV, "SPARKJL_TESTMASTER", "local")
+ENV["SPARK_CONF_DIR"] = "./resources"
 sc = SparkContext(master = test_master)
 
 include("basic.jl")
