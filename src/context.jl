@@ -14,15 +14,18 @@ Params:
  * appname - name of application
 """
 function SparkContext(;master::AbstractString="local",
-                      deploymode::AbstractString="client")
-    props = read_spark_properties()
+                      deploymode::AbstractString="client",
+					  appname::AbstractString="Julia App on Spark")
+    props = read_spark_properties([])
     dict = get_dictionary(props)
     Spark.init(dict)
     conf = SparkConf(props)
+	appName = get(dict, "spark.app.name", appname);
+	setappname(conf, appname)
     setmaster(conf, master)
     setdeploy(conf, deploymode)
     jsc = JJavaSparkContext((JSparkConf,), conf.jconf)
-    sc = SparkContext(jsc, master, dict["spark.app.name"], "")
+    sc = SparkContext(jsc, master, appName, "")
     add_jar(sc, joinpath(dirname(@__FILE__), "..", "jvm", "sparkjl", "target", "sparkjl-0.1.jar"))
     return sc
 end
@@ -46,7 +49,7 @@ function isnotcomment(x)
     return !startswith(x,"#")
 end
 
-function read_spark_properties()
+function read_spark_properties(jconf::AbstractArray)
       sconf = get(ENV, "SPARK_CONF_DIR", "")
       if sconf == ""
           shome =  get(ENV, "SPARK_HOME", "")

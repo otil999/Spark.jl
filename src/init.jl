@@ -14,7 +14,8 @@ function init(dict::Dict)
         #JavaCall.init(["-ea", "-Xmx1024M", "-Djava.class.path=$classpath", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4000"])
 
         #JVM default start
-        JavaCall.init(["-ea", "-Xmx"*dict["spark.driver.memory"], "-cp $classpath", "-Djava.class.path=$classpath"])
+		driverMemory = get(dict, "spark.driver.memory", "1024M")
+        JavaCall.init(["-ea", "-Xmx"*driverMemory, "-cp $classpath", "-Djava.class.path=$classpath"])
     end
 end
 
